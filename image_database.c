@@ -40,6 +40,7 @@ int main(void) {
 
                 if (args[0][0] == 'i' && args[0][1] == '\0' && num == 5) {
                         printf("Insert cmd\n");
+                        tree_insert(root_ptr, args);
                 } else if (args[0][0] == 'q' && args[0][1] == '\0' && num == 4) {
                         printf("Query cmd\n");
                 } else if (args[0][0] == 'p' && args[0][1] == '\0' && num == 1) {

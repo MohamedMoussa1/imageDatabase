@@ -45,13 +45,13 @@ void tree_insert_helper(struct TreeNode *root, char **values, int level) {
 		tree_insert_helper(curr, values, level+1);    // Recursion to check the next level of tree
 	} else if (level != 4) {
 		if (curr->child == NULL) {    // No values already exist
-			p = allocate_node(*values[level-1]);    // Allocate memory for a node with desired value
+			p = allocate_node(&*values[level-1]);    // Allocate memory for a node with desired value
 			curr->child = p;
 			tree_insert_helper(p, values, level+1);    // Recursion to check the next level of tree
 		} else {    // At least one value exists
 			p = curr->child;
 			while (p != NULL) {		// Traverse the list of values
-				if (strcmp(p->value, *values[level-1])==0) {    // Desired value found
+				if (strcmp(p->value, &*values[level-1])==0) {    // Desired value found
 					tree_insert_helper(p, values, level+1);    // Go to the next level
 					return;
 				}
@@ -59,19 +59,19 @@ void tree_insert_helper(struct TreeNode *root, char **values, int level) {
 				p = p->sibling;
 			}
 			if (p == NULL) {
-				q->sibling = allocate_node(*values[level-1]);
+				q->sibling = allocate_node(&*values[level-1]);
 				tree_insert_helper(q->sibling, values, level+1);
 			}
 		}
 	} else {    // Level is 4 (Filename level)
 		if (curr->child == NULL) {    // No filenames of this type exist
-			curr->child = allocate_node(*values[level-1]);
+			curr->child = allocate_node(&*values[level-1]);
 			return;
 		}
 		p = curr->child;
 		while (p != NULL) {		// Traverse the list of filenames
 			if (p->sibling == NULL) {
-				p->sibling = allocate_node(*values[level-1]);
+				p->sibling = allocate_node(&*values[level-1]);
 				return;    // Once filename is added, exit
 			}
 			p = p->sibling;
