@@ -1,5 +1,6 @@
 /*
- * Created by Mohamed Moussa
+ * Created by Sotirios-Efstathios Maneas on 2017-01-02.
+ * Implemented by Mohamed Moussa on 2020-02
  */
 
 #include <stdio.h>

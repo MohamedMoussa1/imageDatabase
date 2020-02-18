@@ -1,5 +1,7 @@
 /*
  * Created by Sotirios-Efstathios Maneas on 2017-06-02.
+ * Implemented by Mohamed Moussa on 2020-02
+ * 
  */
 
 #ifndef _TREE_H
