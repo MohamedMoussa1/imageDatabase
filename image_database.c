@@ -29,24 +29,54 @@ int main(void) {
         // Add your code below:
         int num;
 
+        char *args2[INPUT_ARG_MAX_NUM - 1];
+        char *args3[INPUT_ARG_MAX_NUM - 2];
+
         args[0] = malloc(sizeof(char)*BUFFER_SIZE);
         args[1] = malloc(sizeof(char)*BUFFER_SIZE);
         args[2] = malloc(sizeof(char)*BUFFER_SIZE);
         args[3] = malloc(sizeof(char)*BUFFER_SIZE);
         args[4] = malloc(sizeof(char)*BUFFER_SIZE);
 
+        args2[0] = malloc(sizeof(char)*BUFFER_SIZE);
+        args2[1] = malloc(sizeof(char)*BUFFER_SIZE);
+        args2[2] = malloc(sizeof(char)*BUFFER_SIZE);
+        args2[3] = malloc(sizeof(char)*BUFFER_SIZE);
+
+        args3[0] = malloc(sizeof(char)*BUFFER_SIZE);
+        args3[1] = malloc(sizeof(char)*BUFFER_SIZE);
+        args3[2] = malloc(sizeof(char)*BUFFER_SIZE);
+
         while (fgets(buf, BUFFER_SIZE, stdin) != NULL) {
                 num = tokenize(buf, args);
 
+                for (int i = 0; i < INPUT_ARG_MAX_NUM - 1; i++) {
+                        args2[i] = args[i+1];
+                }
+
+                for (int i = 0; i < INPUT_ARG_MAX_NUM - 2; i++) {
+                        args3[i] = args[i+1];
+                }
+
                 if (args[0][0] == 'i' && args[0][1] == '\0' && num == 5) {
-                        printf("Insert cmd\n");
-                        tree_insert(root_ptr, args);
+                        //printf("Insert cmd\n");
+                        tree_insert(root_ptr, args2);
                 } else if (args[0][0] == 'q' && args[0][1] == '\0' && num == 4) {
-                        printf("Query cmd\n");
+                        //printf("Query cmd\n");
+                        tree_search(root_ptr, args3);
                 } else if (args[0][0] == 'p' && args[0][1] == '\0' && num == 1) {
-                        printf("Print all cmd\n");
+                        //printf("Print all cmd\n");
+                        tree_print(root_ptr);
                 } else {
                         fprintf(stderr, "Invalid command.\n");
+                }
+
+                for (int i = 0; i < INPUT_ARG_MAX_NUM - 1; i++) {
+                        args2[i] = NULL;
+                }
+
+                for (int i = 0; i < INPUT_ARG_MAX_NUM - 2; i++) {
+                        args3[i] = NULL;
                 }
         }
 
