@@ -39,7 +39,7 @@ void tree_insert_helper(struct TreeNode *root, char **values, int level)
 {
 	struct TreeNode *curr = NULL;
 	struct TreeNode *p = NULL;
-	struct TreeNode *q = NULL;
+	struct TreeNode *t = NULL;
 
 	curr = root;
 
@@ -67,14 +67,43 @@ void tree_insert_helper(struct TreeNode *root, char **values, int level)
 					tree_insert_helper(p, values, level + 1); // Go to the next level
 					return;
 				}
-				q = p;
 				p = p->sibling;
 			}
-			if (p == NULL)
+			if (p == NULL) // Did NOT find the value
 			{
-				q->sibling = allocate_node(&*values[level - 1]);
-				//printf("HERE\n");
-				tree_insert_helper(q->sibling, values, level + 1);
+				// q->sibling = allocate_node(&*values[level - 1]);
+				// //printf("HERE\n");
+				// tree_insert_helper(q->sibling, values, level + 1);
+
+				p = curr->child;
+				if (strcmp(&*values[level - 1], p->value) < 0) { // If our value is < the old value at the head
+					// Insert at head
+					t = p;
+					p = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+					p->sibling = t;							  // Set our sibling
+					curr->child = p;						  // Update curr(parent) child
+					tree_insert_helper(p, values, level + 1); // Recursion to check the next level of tree
+				} else {
+					t = p->sibling;    // Keep trace if p->sibling
+					while (p != NULL) {
+						if (strcmp(&*values[level - 1], p->value) > 0) {    // If our value is > p->value
+							if (t == NULL) {
+								// Insert at tail
+								p->sibling = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+								tree_insert_helper(p->sibling, values, level + 1);  // Recursion to check the next level of tree
+								break;
+							} else if (strcmp(&*values[level - 1], t->value) < 0) {    // If our value is < p->value
+								// Insert at middle
+								p->sibling = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+								p->sibling->sibling = t;
+								tree_insert_helper(p->sibling, values, level + 1);  // Recursion to check the next level of tree
+								break;
+							}
+						}
+						t = t->sibling;
+						p = p->sibling;
+					}
+				}
 			}
 		}
 	}
@@ -87,15 +116,43 @@ void tree_insert_helper(struct TreeNode *root, char **values, int level)
 			return;
 		}
 		p = curr->child;
-		while (p != NULL)
-		{ // Traverse the list of filenames
-			if (p->sibling == NULL)
-			{
-				p->sibling = allocate_node(&*values[level - 1]);
-				return; // Once filename is added, exit
+    	if (strcmp(&*values[level - 1], p->value) < 0) { // If our value is < the old value at the head
+			// Insert at head
+			t = p;
+			p = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+			p->sibling = t;							  // Set our sibling
+			curr->child = p;						  // Update curr(parent) child
+			return;		
+		} else {
+			t = p->sibling;    // Keep trace of p->sibling
+			printf("HERERERE\n");
+			while (p != NULL) {
+				printf("Also HERERERE\n");
+				if (strcmp(&*values[level - 1], p->value) > 0) {    // If our value is > p->value
+					if (t == NULL) {
+						// Insert at tail
+						p->sibling = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+						return;
+					} else if (strcmp(&*values[level - 1], t->value) < 0) {    // If our value is < p->value
+						// Insert at middle
+						p->sibling = allocate_node(&*values[level - 1]);   // Allocate memory for a node with desired value
+						p->sibling->sibling = t;
+						return;
+					}
+				}
+				t = t->sibling;
+				p = p->sibling;
 			}
-			p = p->sibling;
 		}
+		// while (p != NULL)
+		// { // Traverse the list of filenames
+		// 	if (p->sibling == NULL)
+		// 	{
+		// 		p->sibling = allocate_node(&*values[level - 1]);
+		// 		return; // Once filename is added, exit
+		// 	}
+		// 	p = p->sibling;
+		// }
 	}
 }
 
@@ -126,33 +183,42 @@ void tree_search(const struct TreeNode *root, char **values)
 		return;
 	}
 
-	p = root->child;    // Level 1 Color
+	p = root->child; // Level 1 Color
 
 	while (p != NULL)
 	{
-		if (strcmp(p->value, values[0])==0) {
-			p = p->child;    // Level 2 Shape
-			while (p != NULL) {
-				if (strcmp(p->value, values[1])==0) {
-					p = p->child;    // Level 3 Texture
-					while (p != NULL) {
-						if (strcmp(p->value, values[2])==0) {
-							p = p->child;    //Level 4 Filename
-							while (p != NULL) {
-								printf("%s\n", p->value);
+		if (strcmp(p->value, values[0]) == 0)
+		{
+			p = p->child; // Level 2 Shape
+			while (p != NULL)
+			{
+				if (strcmp(p->value, values[1]) == 0)
+				{
+					p = p->child; // Level 3 Texture
+					while (p != NULL)
+					{
+						if (strcmp(p->value, values[2]) == 0)
+						{
+							p = p->child; //Level 4 Filename
+							while (p != NULL)
+							{
+								printf("%s ", p->value);
 								p = p->sibling;
 							}
 							return;
 						}
-						if (p == NULL) break;
+						if (p == NULL)
+							break;
 						p = p->sibling;
 					}
 				}
-				if (p == NULL) break;
+				if (p == NULL)
+					break;
 				p = p->sibling;
 			}
 		}
-		if (p == NULL) break;
+		if (p == NULL)
+			break;
 		p = p->sibling;
 	}
 	printf("(NULL)\n");
